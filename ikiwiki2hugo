@@ -1,0 +1,15 @@
+#!/bin/sh
+FILE="$1"
+printf "+++\ntitle = \"$(echo ${FILE} | sed -e 's#__40__#(#g' \
+		-e 's#__34__#\\\"#g' \
+		-e 's#__40__#(#g' \
+		-e 's#__41__#)#g' \
+		-e 's#__44__#,#g' \
+		-e 's#__8212__#—#g' \
+		-e 's#_# #g' \
+		-e 's#.mdwn$##')\"\n"\
+"author = \"$(git log --format='%an' ${FILE} | tail -n 1)\"\n"\
+"date = \"$(git log --format='%aI' ${FILE} | tail -n 1)\"\n"\
+"tags = [\"$(grep -Eh -o '\[\[!tag.*\]\]' ${FILE} | sed -e 's#\[\[!tag ##g' -e 's#\]\]##g' -e 's# #\", \"#')\"]\n+++\n\n" > ${FILE}.2;
+
+sed -r -e 's#^[	 ]*\[\[!tag.*\]\][	 ]*##g' -e 's#[	 ]*\[\[!tag(.*)\]\][	 ]*#\1#g' ${FILE} >> ${FILE}.2;
