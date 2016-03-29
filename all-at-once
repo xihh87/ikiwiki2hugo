@@ -1,0 +1,6 @@
+#!/bin/sh
+for post in *.mdwn; do
+	ikiwiki2markdown $post > $post.2
+	mv $post.2 $post
+	git mv ${post} ${post%%.mdwn}.md
+done
